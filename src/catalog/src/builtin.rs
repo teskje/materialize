@@ -2007,18 +2007,6 @@ pub static MZ_COMPUTE_DEPENDENCIES: Lazy<BuiltinSource> = Lazy::new(|| BuiltinSo
     is_retained_metrics_object: false,
     access: vec![PUBLIC_SELECT],
 });
-pub static MZ_COMPUTE_HYDRATION_STATUSES: Lazy<BuiltinSource> = Lazy::new(|| BuiltinSource {
-    name: "mz_compute_hydration_statuses",
-    schema: MZ_INTERNAL_SCHEMA,
-    oid: oid::SOURCE_MZ_COMPUTE_HYDRATION_STATUSES_OID,
-    data_source: IntrospectionType::ComputeHydrationStatus,
-    desc: RelationDesc::empty()
-        .with_column("object_id", ScalarType::String.nullable(false))
-        .with_column("replica_id", ScalarType::String.nullable(false))
-        .with_column("hydrated", ScalarType::Bool.nullable(false)),
-    is_retained_metrics_object: false,
-    access: vec![PUBLIC_SELECT],
-});
 pub static MZ_COMPUTE_OPERATOR_HYDRATION_STATUSES_PER_WORKER: Lazy<BuiltinSource> =
     Lazy::new(|| BuiltinSource {
         name: "mz_compute_operator_hydration_statuses_per_worker",
@@ -4716,6 +4704,21 @@ pub static MZ_COMPUTE_HYDRATION_TIMES: Lazy<BuiltinSource> = Lazy::new(|| Builti
         .with_column("time_ns", ScalarType::UInt64.nullable(true)),
     data_source: IntrospectionType::ComputeHydrationTimes,
     is_retained_metrics_object: false,
+    access: vec![PUBLIC_SELECT],
+});
+
+pub static MZ_COMPUTE_HYDRATION_STATUSES: Lazy<BuiltinView> = Lazy::new(|| BuiltinView {
+    name: "mz_compute_hydration_statuses",
+    schema: MZ_INTERNAL_SCHEMA,
+    oid: oid::SOURCE_MZ_COMPUTE_HYDRATION_STATUSES_OID,
+    column_defs: None,
+    sql: "
+SELECT
+    object_id,
+    replica_id,
+    time_ns IS NOT NULL AS hydrated,
+    ((time_ns / 1000) || 'microseconds')::interval AS hydration_time
+FROM mz_internal.mz_compute_hydration_times",
     access: vec![PUBLIC_SELECT],
 });
 
@@ -7528,15 +7531,15 @@ pub static BUILTINS_STATIC: Lazy<Vec<Builtin<NameReference>>> = Lazy::new(|| {
         Builtin::View(&MZ_GLOBAL_FRONTIERS),
         Builtin::Source(&MZ_MATERIALIZED_VIEW_REFRESHES),
         Builtin::Source(&MZ_COMPUTE_DEPENDENCIES),
-        Builtin::Source(&MZ_COMPUTE_HYDRATION_STATUSES),
         Builtin::Source(&MZ_COMPUTE_OPERATOR_HYDRATION_STATUSES_PER_WORKER),
-        Builtin::View(&MZ_HYDRATION_STATUSES),
         Builtin::View(&MZ_MATERIALIZATION_LAG),
         Builtin::View(&MZ_COMPUTE_ERROR_COUNTS_PER_WORKER),
         Builtin::View(&MZ_COMPUTE_ERROR_COUNTS),
         Builtin::Source(&MZ_COMPUTE_ERROR_COUNTS_RAW_UNIFIED),
         Builtin::Source(&MZ_COMPUTE_HYDRATION_TIMES),
+        Builtin::View(&MZ_COMPUTE_HYDRATION_STATUSES),
         Builtin::View(&MZ_COMPUTE_OPERATOR_HYDRATION_STATUSES),
+        Builtin::View(&MZ_HYDRATION_STATUSES),
         Builtin::Source(&MZ_CLUSTER_REPLICA_FRONTIERS),
         Builtin::Index(&MZ_SHOW_DATABASES_IND),
         Builtin::Index(&MZ_SHOW_SCHEMAS_IND),
