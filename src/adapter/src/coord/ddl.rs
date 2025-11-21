@@ -1480,6 +1480,7 @@ impl Coordinator {
                 | Op::AlterRetainHistory { .. }
                 | Op::AlterNetworkPolicy { .. }
                 | Op::AlterAddColumn { .. }
+                | Op::AlterMaterializedViewApplyReplacement { .. }
                 | Op::UpdatePrivilege { .. }
                 | Op::UpdateDefaultPrivilege { .. }
                 | Op::GrantRole { .. }
