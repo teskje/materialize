@@ -220,8 +220,8 @@ pub(super) fn builtins() -> impl Iterator<Item = Builtin<NameReference>> {
     [
         Builtin::Table(&MZ_OPTIMIZER_NOTICES),
         Builtin::View(&MZ_NOTICES),
-        Builtin::View(&MZ_NOTICES_REDACTED),
         Builtin::Index(&MZ_NOTICES_IND),
+        Builtin::View(&MZ_NOTICES_REDACTED),
     ]
     .into_iter()
 }

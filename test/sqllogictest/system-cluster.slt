@@ -430,8 +430,8 @@ Explained Query:
 Used Indexes:
   - mz_catalog.mz_clusters_ind (delta join lookup)
   - mz_catalog.mz_cluster_replicas_ind (*** full scan ***)
-  - mz_catalog.mz_cluster_replica_sizes_ind (delta join lookup)
   - mz_internal.mz_cluster_replica_metrics_ind (delta join lookup)
+  - mz_catalog.mz_cluster_replica_sizes_ind (delta join lookup)
 
 Target cluster: mz_catalog_server
 
