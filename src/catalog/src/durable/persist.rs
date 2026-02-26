@@ -1747,6 +1747,10 @@ impl DurableCatalogState for PersistCatalogState {
         self.sync_to_current_upper().await?;
         Ok(())
     }
+
+    fn shard_id(&self) -> ShardId {
+        self.shard_id
+    }
 }
 
 /// Deterministically generate a shard ID for the given `organization_id` and `seed`.
