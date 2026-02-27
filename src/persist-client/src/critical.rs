@@ -348,11 +348,12 @@ where
         }
     }
 
-    // Expiry temporarily removed.
-    // If you'd like to stop this handle from holding back the since of the shard,
-    // downgrade it to [].
-    // TODO(bkirwi): revert this when since behaviour on expiry has settled,
-    // or all readers are associated with a critical handle.
+    /// Politely expires this reader, releasing its since capability.
+    #[instrument(level = "debug", fields(shard = %self.machine.shard_id()))]
+    pub async fn expire(self) {
+        let (_, maintenance) = self.machine.expire_critical_reader(&self.reader_id).await;
+        maintenance.start_performing(&self.machine, &self.gc);
+    }
 }
 
 #[cfg(test)]
